@@ -21,12 +21,12 @@ def main():
 
     # Go through each item
     fail = []
-    for i in range(1000, 10000):
+    for i in range(100000):
         response, content = client.get("files", id=i)
         j = json.loads(content.decode("utf-8"))
         if response.status == 200:
-            filenae = "%s/%06i.json" % (dest, i)
             print("Writing %6i " % i)
+            filename = "%s/%06i.json" % (dest, i)
             with open(filename, 'w') as f:
                 f.write(json.dumps(j, sort_keys=True, indent=2))
         else:
