@@ -16,4 +16,9 @@ elif sys.argv[1] == 'files':
     response, content = client.index("files")
     j = json.loads(content.decode("utf-8"))
     print(json.dumps(j, sort_keys=True, indent=2))
-
+elif sys.argv[1] == 'file':
+    response, content = client.get("files", id=sys.argv[2])
+    j = json.loads(content.decode("utf-8"))
+    print(response)
+    print(json.dumps(j, sort_keys=True, indent=2))
+    
