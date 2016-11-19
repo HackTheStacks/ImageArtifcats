@@ -11,6 +11,9 @@ class OmekaClient:
     
     def get(self, resource, id=None, query={}):
         return self._request("GET", resource, id=id, query=query)
+
+    def index(self, resource, id=None, query={}):
+        return self._request("INDEX", resource, id=id, query=query)
     
     def post(self, resource, data, query={}, headers={}):
         return self._request("POST", resource, data=data, query=query, headers=headers)
