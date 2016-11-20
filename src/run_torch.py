@@ -26,7 +26,7 @@ for line in out.split("\n")[:5]:
     looks_like.append((float(prob), cls))
 
 # Separate out similar images and their metadata
-similar = []
+similars = []
 tags = {}
 elements = {}
 types = {}
@@ -48,24 +48,32 @@ for line in out.split("\n")[7:]:
         elements[name][int(element['element']['id'])] = element['text']
 
     types[int(j['item_type']['id'])] = j['item_type']['name']
-    similar.append([img_name, dist])
+    similars.append([img_name, dist])
 
-print("Probable ImageNet categories:")
+print("<h2>Most likely category</h2>\n<dl>")
 for item in looks_like:
-    print("%5.2f%% %s" % item)
+    print("  <dt>%s%%</dt><dd>%s%%</dd>" % (item[1], item[0]))
+print("</dl>")
+print("<h2>Similar Images</h2>")
+for img_name, dist in similars:
+    print("<figure><img src='../data/thumbnails/%s'><figcaption>Distance: %s</figcaption></figure>" % (img_name, dist))
+print()
 
-print("\nTAGS: #############################################")
+print("<h2>Tags</h2>\n<ul>")
 for tag_id in tags:
-    print(tags[tag_id])
+    print('  <li><input type="checkbox" name="%s"/></li>' % (tags[tag_id]))
+print("</ul>")
 
-print("\nTYPES: ############################################")
+print("<h2>Types</h2>\n<ul>")
 for type_id in types:
-    print(types[type_id])
+    print('  <li><input type="checkbox" name="%s"/></li>' % (types[type_id]))
+print("</ul>")
 
-print("\nELEMENTS: #########################################")
-    
+
+print("<h2>Types</h2>\n<dl>")
 for name in sorted(elements):
     for element_id in elements[name]:
-        print("%s: %s" % (name, elements[name][element_id]))
+        print("  <dt>%s</dt><dd>%s</dd>" % (name, elements[name][element_id]))
+print("</dl>")
 
     
