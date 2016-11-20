@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import subprocess as sp
 import sys
 import json
@@ -49,13 +50,14 @@ for line in out.split("\n")[6:]:
     similars.append([img_name, dist])
 
 # Print out stuff
-print("<h2>Your uploaded Image</h2>", end='')
-print("<img src=\"/%s\"><br>" % image_path, end='')
-
-print("<h2>Most likely category</h2><table>", end='')
+print("<table style=\"float: right;\">", end='')
 for item in looks_like:
     print("  <tr><td>%s</td><td>%s%%</td></tr>" % (item[1], item[0]), end='')
 print("</table>", end='')
+
+print("<h2>Your uploaded Image</h2>", end='')
+print("<img src=\"/%s\"><br>" % image_path, end='')
+
 
 print("<h2>Similar Images</h2>", end='')
 for img_name, dist in similars:
@@ -71,10 +73,10 @@ for type_id in types:
     print('  <li><input type="checkbox" name="%s"/>%s</li>' % (type_id, types[type_id]), end='')
 print("</ul>", end='')
 
-print("<h2>Types</h2><dl>", end='')
+print("<h2>Elements</h2><ul>", end='')
 for name in sorted(elements):
     for element_id in elements[name]:
-        print("  <dt>%s</dt><dd>%s</dd>" % (name, elements[name][element_id]), end='')
-print("</dl>", end='')
+        print("  <li><strong>%s</strong>: %s <input type=\"checkbox\" name=\"%s\"/></li>" % (name, elements[name][element_id], element_id), end='')
+print("</ul>", end='')
 
     
