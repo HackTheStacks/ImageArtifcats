@@ -103,10 +103,19 @@ function main()
   end
 
   -- If we're comparing against older then do so
-  if command == "comapre" then
+  if command == "compare" then
     local image_path = arg[3]
     local basenames, features = torch.load("original.t7")
     local feature = process(model, image_path, n_classes, 1, 1)
+    
+    local distances = (features - feature:view(1, feature:size(1)):expandAs(features)):pow(2):sum(2):sqrt()
+
+    -- Print 5 closest 
+    local dists, indexes = output:topk(n_classes, false, true)
+    for n = 1, n_classes do
+      local index = indexes[n]
+      print(string.format("%7.3f %s", distances[index], basenames[index]))
+    end 
   end
 end
 
