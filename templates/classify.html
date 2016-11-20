@@ -4,10 +4,7 @@
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
-    <form action="thanks" method="POST">
-      {{ (body|safe)[2:] }}
-      <input type="submit" value="Upload Metadata!>
-    </form>
+    {{ (body|safe)[2:] }}
   </body>
 </html>
 

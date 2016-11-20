@@ -18,7 +18,11 @@ def index():
 def classify():
 
     img = request.args.get('image')
-    cmd = ["python3", "src/run_torch.py", "static/images/%s" % img]
+    if 'page' in request.args:
+        page = request.args.get('page')
+    else:
+        page = 1
+    cmd = ["python3", "src/run_torch.py", "static/images/%s" % img, str(page)]
     p = subprocess.Popen(cmd, stdout = subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
@@ -45,4 +49,4 @@ def thanks():
     return render_template("thanks.html")
 
 if __name__ == "__main__" :
-    app.run()
+    app.run(host='10.20.40.124', port=5000)

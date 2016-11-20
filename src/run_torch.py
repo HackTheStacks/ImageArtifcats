@@ -5,6 +5,10 @@ import sys
 import json
 
 image_path = sys.argv[1]
+try:
+    page = int(sys.argv[2])
+except:
+    page = 1
 images_dir = "static/data/original"
 files_dir = "static/data/files"
 items_dir = "static/data/items"
@@ -14,7 +18,7 @@ with open("static/data/name.item") as f:
     for line in f:
         file_name, item_id = line.split()
         image_map[file_name] = int(item_id)
-out = sp.getoutput("th src/process.lua  compare pretrained/resnet-34.t7 " + image_path)
+out = sp.getoutput("th src/process.lua  compare pretrained/resnet-34.t7 %s %s" % (page, image_path))
 
 # Categories for what it looks like
 looks_like = []
@@ -64,6 +68,17 @@ print("<h2>Uploaded Image</h2>", end='')
 print("<img style=\"margin-left: 50px;\" src=\"/%s\"><br>" % image_path, end='')
 
 
+print("<form style=\"float:right;\" action=\"classify\" method=\"GET\">", end="")
+print("<input type=\"hidden\" name=\"image\" value=\"%s\">" % image_path.split('/')[-1], end="")
+print("<input type=\"hidden\" name=\"page\" value=\"%s\">" % str(page + 1), end="")
+print("<input type=\"submit\" value=\"Next page!\"></form>", end="")
+if page > 1:
+  print("<form style=\"float:right;\" action=\"classify\" method=\"GET\">", end="")
+  print("<input type=\"hidden\" name=\"image\" value=\"%s\">" % image_path.split('/')[-1], end="")
+  print("<input type=\"hidden\" name=\"page\" value=\"%s\">" % str(page - 1), end="")
+  print("<input type=\"submit\" value=\"Previous page\"></form>", end="")
+
+print("<form action=\"thanks\" method=\"POST\">", end="")
 print("<h2>Similar Images</h2>", end='')
 for img_name, dist in similars:
     print("<figure><img src=\"/static/data/thumbnails/%s\"><figcaption>Distance: %s <input type=\"checkbox\" name=\"%s\"</figcaption></figure>" % (img_name, dist, img_name), end='')
@@ -85,5 +100,5 @@ for name in sorted(elements):
             print("  <li><input type=\"checkbox\" name=\"%s\"/> <strong>%s</strong>: %s</li>" %
                   (element_id, name, element), end='')
 print("</ul>", end='')
-
+print("<input type=\"submit\" value=\"Upload Metadata!\"></form>", end="")
     

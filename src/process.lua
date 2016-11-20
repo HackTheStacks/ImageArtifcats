@@ -61,7 +61,6 @@ function process(model, image_path, n_classes, position, total)
       print(string.format("%6.2f %s", 100 * probs[n], imagenet[indexes[n]]))
     end
     print("")
-
     -- image.save(string.format("%s_crop.jpg", basename), prepared_img[1]:float())
   else
     print(string.format("%6.2f %-32s", 100 * position / total, basename))
@@ -105,7 +104,8 @@ function main()
 
   -- If we're comparing against older then do so
   if command == "compare" then
-    local image_path = arg[3]
+    local image_path = arg[4]
+    local page = tonumber(arg[3])
     local tab = torch.load("src/original.t7")
     local basenames = tab[1]
     local features = tab[2]
@@ -113,9 +113,14 @@ function main()
     local distances = (features:cuda() - feature:expandAs(features)):pow(2):sum(2):sqrt()
 
     -- Print 5 closest
-    n_classes = 6
+    n_classes = 6 * page
+    if page < 1 then
+      n_classes = 6
+    elseif page > distances:size(1) / 6 then
+        n_classes = math.floor(distances:size(1) / 6)
+    end
     local dists, indexes = distances:view(distances:size(1)):topk(n_classes, false, true)
-    for n = 1, n_classes do
+    for n = n_classes - 5, n_classes do
       local index = indexes[n]
       print(string.format("%6.2f %s", distances[index][1], basenames[index]))
     end 
