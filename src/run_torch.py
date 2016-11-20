@@ -71,12 +71,12 @@ print("<img style=\"margin-left: 50px;\" src=\"/%s\"><br>" % image_path, end='')
 print("<form style=\"float:right;\" action=\"classify\" method=\"GET\">", end="")
 print("<input type=\"hidden\" name=\"image\" value=\"%s\">" % image_path.split('/')[-1], end="")
 print("<input type=\"hidden\" name=\"page\" value=\"%s\">" % str(page + 1), end="")
-print("<input type=\"submit\" value=\"Next &rarr;\"></form>", end="")
+print("<input class=\"button\" type=\"submit\" value=\"Next &rarr;\"></form>", end="")
 if page > 1:
   print("<form style=\"float:right;\" action=\"classify\" method=\"GET\">", end="")
   print("<input type=\"hidden\" name=\"image\" value=\"%s\">" % image_path.split('/')[-1], end="")
   print("<input type=\"hidden\" name=\"page\" value=\"%s\">" % str(page - 1), end="")
-  print("<input type=\"submit\" value=\"&larr; Previous\"></form>", end="")
+  print("<input class=\"button\" type=\"submit\" value=\"&larr; Previous\"></form>", end="")
 
 print("<form action=\"thanks\" method=\"POST\">", end="")
 print("<h2>Similar Images</h2>", end='')
@@ -100,5 +100,5 @@ for name in sorted(elements):
             print("  <li><input type=\"checkbox\" name=\"%s\"/> <strong>%s</strong>: %s</li>" %
                   (element_id, name, element), end='')
 print("</ul>", end='')
-print("<input type=\"submit\" value=\"Upload Metadata!\"></form>", end="")
+print("<input class=\"button\" type=\"submit\" value=\"Upload Metadata!\"></form>", end="")
     

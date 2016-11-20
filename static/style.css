@@ -1,5 +1,7 @@
 html, body {
   height: 100%;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
 }
 
 html {
@@ -8,7 +10,7 @@ html {
 }
 body {
   max-width: 1200px;
-  background-color: #CCCCCC;
+  background-color: white;
   display: table-cell;
   vertical-align: middle;
 }
@@ -35,10 +37,22 @@ img {
   max-width: 256px;
 }
 
-h2 {
-
-}
-
 ul {
   list-style: none
+}
+.button {
+  background-color: #ffccff; /* Green */
+  border: 1px solid black;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  color: black;
+  padding: 10px;
+  margin: 10px;
+}
+
+h1 {
+
+
 }
