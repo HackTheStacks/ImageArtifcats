@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for, render_template
 import subprocess
 
 app = Flask(__name__)
@@ -10,7 +10,7 @@ def hello(img):
                             stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
     out, err = p.communicate()
-    return out
+    return render_template("classify.html", body=out)
 
 
 if __name__ == "__main__" :

@@ -49,31 +49,32 @@ for line in out.split("\n")[6:]:
     similars.append([img_name, dist])
 
 # Print out stuff
-print("<h2>New Image</h2>")
-print("<img src='/%s'><br>" % image_path)
-print("<h2>Most likely category</h2>\n<table>")
+print("<h2>Your uploaded Image</h2>", end='')
+print("<img src=\"/%s\"><br>" % image_path, end='')
+
+print("<h2>Most likely category</h2><table>", end='')
 for item in looks_like:
-    print("  <tr><td>%s</td><td>%s%%</td></tr>" % (item[1], item[0]))
-print("</table>")
-print("<h2>Similar Images</h2>")
+    print("  <tr><td>%s</td><td>%s%%</td></tr>" % (item[1], item[0]), end='')
+print("</table>", end='')
+
+print("<h2>Similar Images</h2>", end='')
 for img_name, dist in similars:
-    print("<figure><img src='/static/data/thumbnails/%s'><figcaption>Distance: %s <input type='checkbox' name='%s'</figcaption></figure>" % (img_name, dist, img_name))
-print()
+    print("<figure><img src=\"/static/data/thumbnails/%s\"><figcaption>Distance: %s <input type=\"checkbox\" name=\"%s\"</figcaption></figure>" % (img_name, dist, img_name), end='')
 
-print("<h2>Tags</h2>\n<ul>")
+print("<br><br><h2>Tags</h2><ul>", end='')
 for tag_id in tags:
-    print('  <li><input type="checkbox" name="%s"/>%s</li>' % (tag_id, tags[tag_id]))
-print("</ul>")
+    print('  <li><input type="checkbox" name="%s"/>%s</li>' % (tag_id, tags[tag_id]), end='')
+print("</ul>", end='')
 
-print("<h2>Types</h2>\n<ul>")
+print("<h2>Types</h2><ul>", end='')
 for type_id in types:
-    print('  <li><input type="checkbox" name="%s"/>%s</li>' % (type_id, types[type_id]))
-print("</ul>")
+    print('  <li><input type="checkbox" name="%s"/>%s</li>' % (type_id, types[type_id]), end='')
+print("</ul>", end='')
 
-print("<h2>Types</h2>\n<dl>")
+print("<h2>Types</h2><dl>", end='')
 for name in sorted(elements):
     for element_id in elements[name]:
-        print("  <dt>%s</dt><dd>%s</dd>" % (name, elements[name][element_id]))
-print("</dl>")
+        print("  <dt>%s</dt><dd>%s</dd>" % (name, elements[name][element_id]), end='')
+print("</dl>", end='')
 
     
