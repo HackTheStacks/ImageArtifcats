@@ -7,8 +7,8 @@ import urllib.request
 
 def main():
     src = sys.argv[1]
-    src_json = os.path.join(src, 'json')
-    dst_image = os.path.join(src, 'images')
+    src_json = os.path.join(src, 'files')
+    dst_image = os.path.join(src, 'thumbnails')
     
     # Print filenames
     filenames = sorted(os.listdir(src_json))
@@ -16,7 +16,7 @@ def main():
         path = os.path.join(src_json, filename)
         with open(path) as f:
             j = json.load(f)
-        original_url = j['file_urls']['original']
+        original_url = j['file_urls']['thumbnail']
         image_name = os.path.basename(original_url)
         dst = os.path.join(dst_image, image_name)
         with open(dst, 'wb') as f:
