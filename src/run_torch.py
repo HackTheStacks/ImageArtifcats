@@ -28,7 +28,7 @@ similars = []
 tags = {}
 elements = {}
 types = {}
-for line in out.split("\n")[7:]:
+for line in out.split("\n")[6:]:
     dist, img_name = line.strip().split()
     item_id = int(image_map[img_name])
     item_path = "static/data/items/%06i.json" % item_id
@@ -47,11 +47,13 @@ for line in out.split("\n")[7:]:
 
     types[int(j['item_type']['id'])] = j['item_type']['name']
     similars.append([img_name, dist])
+
+# Print out stuff
 print("<h2>New Image</h2>")
 print("<img src='/%s'><br>" % image_path)
 print("<h2>Most likely category</h2>\n<table>")
 for item in looks_like:
-    print("  <tr><td>%s%%</td><td>%s%%</td></tr>" % (item[1], item[0]))
+    print("  <tr><td>%s</td><td>%s%%</td></tr>" % (item[1], item[0]))
 print("</table>")
 print("<h2>Similar Images</h2>")
 for img_name, dist in similars:
