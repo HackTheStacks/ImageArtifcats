@@ -9,6 +9,11 @@ app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+@app.route("/")
+def index():
+    # Handle uploaded files
+    return render_template("upload.html")
+
 @app.route("/classify", methods=['GET', 'POST'])
 def classify():
 
