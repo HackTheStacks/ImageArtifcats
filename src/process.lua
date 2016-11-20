@@ -58,14 +58,15 @@ function process(model, image_path, n_classes, position, total)
     local probs, indexes = output:topk(n_classes, true, true)
     local classes = {}
     for n = 1, n_classes do
-      print(string.format("%7.3f %s", 100 * probs[n], imagenet[indexes[n]]))
+      print(string.format("%6.2f %s", 100 * probs[n], imagenet[indexes[n]]))
     end
+    print("")
 
-    image.save(string.format("%s_crop.jpg", basename), prepared_img[1]:float())
+    -- image.save(string.format("%s_crop.jpg", basename), prepared_img[1]:float())
   else
-    print(string.format("%-32s %7.3f", basename, 100 * position / total))
+    print(string.format("%6.2f %-32s", 100 * position / total, basename))
   end
-  
+
   -- Calculate
   return model.modules[10].output:float()
 end
@@ -96,7 +97,7 @@ function main()
     local basenames = {}
     local features = torch.FloatTensor(#original, 512)
     for i, image_path in ipairs(original) do
-      basenames[i - 2] = paths.basename(image_path)
+      basenames[i] = paths.basename(image_path)
       features[{{i}, {}}] = process(model, image_path, n_classes, i, #original)
     end
     torch.save("original.t7", {basenames, features})
@@ -105,16 +106,17 @@ function main()
   -- If we're comparing against older then do so
   if command == "compare" then
     local image_path = arg[3]
-    local basenames, features = torch.load("original.t7")
-    local feature = process(model, image_path, n_classes, 1, 1)
-    
-    local distances = (features - feature:view(1, feature:size(1)):expandAs(features)):pow(2):sum(2):sqrt()
+    local tab = torch.load("original.t7")
+    local basenames = tab[1]
+    local features = tab[2]
+    local feature = process(model, image_path, n_classes, 1, 1):cuda()
+    local distances = (features:cuda() - feature:expandAs(features)):pow(2):sum(2):sqrt()
 
-    -- Print 5 closest 
-    local dists, indexes = output:topk(n_classes, false, true)
+    -- Print 5 closest
+    local dists, indexes = distances:view(distances:size(1)):topk(n_classes, false, true)
     for n = 1, n_classes do
       local index = indexes[n]
-      print(string.format("%7.3f %s", distances[index], basenames[index]))
+      print(string.format("%6.2f %s", distances[index][1], basenames[index]))
     end 
   end
 end
