@@ -44,19 +44,24 @@ for line in out.split("\n")[6:]:
         name = element['element']['name']
         if name not in elements:
             elements[name] = {}
-        elements[name][int(element['element']['id'])] = element['text']
+        element_id = int(element['element']['id']) 
+        if element_id not in elements[name]:
+            elements[name][element_id] = []
+        if element['text'] not in elements[name][element_id]:
+            elements[name][element_id].append(element['text'])
 
     types[int(j['item_type']['id'])] = j['item_type']['name']
     similars.append([img_name, dist])
 
 # Print out stuff
 print("<table style=\"float: right;\">", end='')
+print("<tr><th>ImageNet Category</th><th>Probability</th></tr>", end='')
 for item in looks_like:
     print("  <tr><td>%s</td><td>%s%%</td></tr>" % (item[1], item[0]), end='')
 print("</table>", end='')
 
-print("<h2>Your uploaded Image</h2>", end='')
-print("<img src=\"/%s\"><br>" % image_path, end='')
+print("<h2>Uploaded Image</h2>", end='')
+print("<img style=\"margin-left: 50px;\" src=\"/%s\"><br>" % image_path, end='')
 
 
 print("<h2>Similar Images</h2>", end='')
@@ -76,7 +81,9 @@ print("</ul>", end='')
 print("<h2>Elements</h2><ul>", end='')
 for name in sorted(elements):
     for element_id in elements[name]:
-        print("  <li><strong>%s</strong>: %s <input type=\"checkbox\" name=\"%s\"/></li>" % (name, elements[name][element_id], element_id), end='')
+        for element in elements[name][element_id]:
+            print("  <li><input type=\"checkbox\" name=\"%s\"/> <strong>%s</strong>: %s</li>" %
+                  (name, element, element_id), end='')
 print("</ul>", end='')
 
     

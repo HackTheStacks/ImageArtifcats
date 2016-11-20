@@ -113,7 +113,7 @@ function main()
     local distances = (features:cuda() - feature:expandAs(features)):pow(2):sum(2):sqrt()
 
     -- Print 5 closest
-    n_classes = 12
+    n_classes = 6
     local dists, indexes = distances:view(distances:size(1)):topk(n_classes, false, true)
     for n = 1, n_classes do
       local index = indexes[n]
