@@ -7,8 +7,8 @@ require("optim")
 require("paths")
 
 -- From facebook's code
-local transforms = require('transforms')
-local imagenet = require('imagenet')
+local transforms = require('src/transforms')
+local imagenet = require('src/imagenet')
 local meanstd = { mean = { 0.485, 0.456, 0.406 },
                   std = { 0.229, 0.224, 0.225 }, }
 local transform = transforms.Compose{ transforms.Scale(256),
@@ -93,20 +93,20 @@ function main()
 
   -- otherwise process original
   if command == "original" then 
-    require("original")
+    require("src/original")
     local basenames = {}
     local features = torch.FloatTensor(#original, 512)
     for i, image_path in ipairs(original) do
       basenames[i] = paths.basename(image_path)
       features[{{i}, {}}] = process(model, image_path, n_classes, i, #original)
     end
-    torch.save("original.t7", {basenames, features})
+    torch.save("src/original.t7", {basenames, features})
   end
 
   -- If we're comparing against older then do so
   if command == "compare" then
     local image_path = arg[3]
-    local tab = torch.load("original.t7")
+    local tab = torch.load("src/original.t7")
     local basenames = tab[1]
     local features = tab[2]
     local feature = process(model, image_path, n_classes, 1, 1):cuda()
