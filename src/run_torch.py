@@ -83,7 +83,7 @@ for name in sorted(elements):
     for element_id in elements[name]:
         for element in elements[name][element_id]:
             print("  <li><input type=\"checkbox\" name=\"%s\"/> <strong>%s</strong>: %s</li>" %
-                  (name, element, element_id), end='')
+                  (element_id, name, element), end='')
 print("</ul>", end='')
 
     
