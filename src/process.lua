@@ -11,9 +11,9 @@ local transforms = require('transforms')
 local imagenet = require('imagenet')
 local meanstd = { mean = { 0.485, 0.456, 0.406 },
                   std = { 0.229, 0.224, 0.225 }, }
-local transformT = transforms.Compose{ transforms.Scale(256),
+local transform = transforms.Compose{ transforms.Scale(256),
                                       transforms.ColorNormalize(meanstd),
-                                      transforms.TenCrop(224), }
+                                      transforms.CenterCrop(224), }
 
 function load_model(model_path)
   local model = torch.load(model_path)
@@ -45,33 +45,29 @@ end
 
 function process(model, image_path, n_classes, position, total)
   local basename = paths.basename(image_path, '.jpg')
-  print(string.format("%-32s %7.3f", basename, 100 * position / total))
   
   -- Load image and model
   local img = load_image(image_path)
   local prepared_img = prepare_image(img)
-  -- image.save("../" .. basename .. "_crop.jpg", prepared_img[1])
 
   -- Process class
   local output = model:forward(prepared_img):squeeze()
-  local classes =  {}
-  local counts =  {}
-  for cut = 1, 10 do 
-    local probs, indexes = output[cut]:topk(n_classes, true, true)
+
+  -- Save the image if there's only one
+  if total == 1 then 
+    local probs, indexes = output:topk(n_classes, true, true)
+    local classes = {}
     for n = 1, n_classes do
-      local class = imagenet[indexes[n]]
-      classes[class] = (classes[class] or 0) + probs[n]
-      counts[class] = (counts[class] or 0) + 1
+      print(string.format("%7.3f %s", 100 * probs[n], imagenet[indexes[n]]))
     end
+
+    image.save(string.format("%s_crop.jpg", basename), prepared_img[1]:float())
+  else
+    print(string.format("%-32s %7.3f", basename, 100 * position / total))
   end
   
-  -- Print average classes
-  for class, prob in pairs(classes) do
-    classes[class] = prob / counts[class]
-  end
-
-  local features = model.modules[10].output:float()
-  torch.save("../features/" .. basename .. ".t7", {classes, features})
+  -- Calculate
+  return model.modules[10].output:float()
 end
 
 function main()
@@ -83,24 +79,34 @@ function main()
 
   -- If there are multiple arguments then just process those
   if command == "image" then
+    local basenames = {}
+    local features = torch.FloatTensor(#arg - 2, 512)
     for i, image_path in ipairs(arg) do
       if i > 2 then
-        process(model, image_path, n_classes, i - 2, #arg - 2)
+        basenames[i - 2] = paths.basename(image_path)
+        features[{{i - 2}, {}}] = process(model, image_path, n_classes, i - 2, #arg - 2)
       end
     end
+    torch.save("args.t7", {basenames, features})
   end
 
   -- otherwise process original
   if command == "original" then 
     require("original")
+    local basenames = {}
+    local features = torch.FloatTensor(#original, 512)
     for i, image_path in ipairs(original) do
-      process(model, image_path, n_classes, i, #original)
+      basenames[i - 2] = paths.basename(image_path)
+      features[{{i}, {}}] = process(model, image_path, n_classes, i, #original)
     end
+    torch.save("original.t7", {basenames, features})
   end
 
   -- If we're comparing against older then do so
   if command == "comapre" then
-    -- require("existing")
+    local image_path = arg[3]
+    local basenames, features = torch.load("original.t7")
+    local feature = process(model, image_path, n_classes, 1, 1)
   end
 end
 
