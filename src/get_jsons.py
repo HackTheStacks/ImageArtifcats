@@ -22,7 +22,7 @@ def main():
     # Go through each item
     fail = []
     for i in range(100000):
-        response, content = client.get("files", id=i)
+        response, content = client.get(sys.argv[2], id=i)
         j = json.loads(content.decode("utf-8"))
         if response.status == 200:
             print("Writing %6i " % i)
@@ -31,10 +31,6 @@ def main():
                 f.write(json.dumps(j, sort_keys=True, indent=2))
         else:
             print("FAIL! %6i |%s|" % (i, response.status))
-            fail.append(i)
-
-    # Print faile
-    print(fail)
     
 if __name__ == "__main__":
     main()
