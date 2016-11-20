@@ -40,5 +40,9 @@ def upload():
 
     return render_template("upload.html")
 
+@app.route("/thanks", methods=['GET', 'POST'])
+def thanks():
+    return render_template("thanks.html")
+
 if __name__ == "__main__" :
     app.run()
