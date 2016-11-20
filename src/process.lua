@@ -105,7 +105,6 @@ function main()
 
   -- If we're comparing against older then do so
   if command == "compare" then
-    n_classes = 8
     local image_path = arg[3]
     local tab = torch.load("original.t7")
     local basenames = tab[1]
@@ -114,10 +113,11 @@ function main()
     local distances = (features:cuda() - feature:expandAs(features)):pow(2):sum(2):sqrt()
 
     -- Print 5 closest
+    n_classes = 12
     local dists, indexes = distances:view(distances:size(1)):topk(n_classes, false, true)
     for n = 1, n_classes do
       local index = indexes[n]
-      print(string.format("%6.2f ../data/original/%s", distances[index][1], basenames[index]))
+      print(string.format("%6.2f %s", distances[index][1], basenames[index]))
     end 
   end
 end
